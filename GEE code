@@ -1,4 +1,4 @@
-//  "roi" is the study area or region of interest
+//  "roi" is the region of interest.
     "newroi" is the zoomed-in part of the "roi" where you want to find the loss of vegetation and the related statistics.
 
 // Load Sentinel-1 C-band SAR Ground Range collection (log scale, VV, descending)
