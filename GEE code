@@ -1,3 +1,6 @@
+//  "roi" is the study area or region of interest
+    "newroi" is the zoomed-in part of the "roi" where you want to find the loss of vegetation and the related statistics.
+
 // Load Sentinel-1 C-band SAR Ground Range collection (log scale, VV, descending)
 
 var collectionVV = ee.ImageCollection('COPERNICUS/S1_GRD')
@@ -22,71 +25,73 @@ print(collectionVH, 'Collection VH');
 
 //Filter by date
 
-var first2016VV = collectionVV.filterDate('2016-08-01', '2016-08-10').mosaic();
-var second2018VV = collectionVV.filterDate('2018-08-05', '2018-08-10').mosaic();
-var third2019VV = collectionVV.filterDate('2019-08-01', '2019-08-15').mosaic();
-var first2016VH = collectionVH.filterDate('2016-08-01', '2016-08-10').mosaic();
-var second2018VH = collectionVH.filterDate('2018-08-05', '2018-08-10').mosaic();
-var third2019VH = collectionVH.filterDate('2019-08-01', '2019-08-15').mosaic();
+var first2017VV = collectionVV.filterDate('2017-04-01', '2017-05-31').mosaic();
+var second2019VV = collectionVV.filterDate('2019-04-01', '2019-05-31').mosaic();
+var third2020VV = collectionVV.filterDate('2020-04-01', '2020-05-31').mosaic();
+var first2017VH = collectionVH.filterDate('2017-04-01', '2017-05-31').mosaic();
+var second2019VH = collectionVH.filterDate('2019-04-01', '2019-05-31').mosaic();
+var third2020VH = collectionVH.filterDate('2020-04-01', '2020-05-31').mosaic();
 
 // Display map
 Map.centerObject(roi, 7);
-Map.addLayer(first2016VV, {min:-15,max:0}, '2016 VV', 0);
-Map.addLayer(second2018VV, {min:-15,max:0}, '2018 VV', 0);
-Map.addLayer(third2019VV, {min:-15,max:0}, '2019 VV', 0);
-Map.addLayer(first2016VH, {min:-27,max:0}, '2016 VH', 0);
-Map.addLayer(second2018VH, {min:-27,max:0}, '2018 VH', 0);
-Map.addLayer(third2019VH, {min:-27,max:0}, '2019 VH', 0);
-Map.addLayer(first2016VH.addBands(second2018VH).addBands(third2019VH), {min: -27,
-max: -8}, '2016/2018/2019 RGB', 0);
+Map.addLayer(first2017VV, {min:-15,max:0}, '2017 VV', 0);
+Map.addLayer(second2019VV, {min:-15,max:0}, '2019 VV', 0);
+Map.addLayer(third2020VV, {min:-15,max:0}, '2020 VV', 0);
+Map.addLayer(first2017VH, {min:-27,max:0}, '2017 VH', 0);
+Map.addLayer(second2019VH, {min:-27,max:0}, '2019VH', 0);
+Map.addLayer(third2020VH, {min:-27,max:0}, '2020 VH', 0);
+Map.addLayer(first2017VH.addBands(second2019VH).addBands(third2020VH), {min: -27,
+max: -8}, '2017/2019/2020 RGB', 0);
 
 //Apply filter to reduce speckle
 
 var SMOOTHING_RADIUS = 50;
-var first2016VV_filtered = first2016VV.focal_mean(SMOOTHING_RADIUS, 'circle', 'meters');
-var first2016VH_filtered = first2016VH.focal_mean(SMOOTHING_RADIUS, 'circle', 'meters');
-var second2018VV_filtered = second2018VV.focal_mean(SMOOTHING_RADIUS, 'circle',
+var first2017VV_filtered = first2017VV.focal_mean(SMOOTHING_RADIUS, 'circle', 'meters');
+var first2017VH_filtered = first2017VH.focal_mean(SMOOTHING_RADIUS, 'circle', 'meters');
+var second2019VV_filtered = second2019VV.focal_mean(SMOOTHING_RADIUS, 'circle',
 'meters');
-var second2018VH_filtered = second2018VH.focal_mean(SMOOTHING_RADIUS, 'circle',
+var second2019VH_filtered = second2019VH.focal_mean(SMOOTHING_RADIUS, 'circle',
 'meters');
-var third2019VV_filtered = third2019VV.focal_mean(SMOOTHING_RADIUS, 'circle', 'meters');
-var third2019VH_filtered = third2019VH.focal_mean(SMOOTHING_RADIUS, 'circle', 'meters');
+var third2020VV_filtered = third2020VV.focal_mean(SMOOTHING_RADIUS, 'circle', 'meters');
+var third2020VH_filtered = third2020VH.focal_mean(SMOOTHING_RADIUS, 'circle', 'meters');
 
 //Display filtered images
 
-Map.addLayer(first2016VV_filtered, {min:-15,max:0}, '2016 VV Filtered',0);
-Map.addLayer(first2016VH_filtered, {min:-27,max:0}, '2016 VH Filtered',0);
-Map.addLayer(second2018VV_filtered, {min:-15,max:0}, '2018 VV Filtered',0);
-Map.addLayer(second2018VH_filtered, {min:-27,max:0}, '2018 VH Filtered',0);
-Map.addLayer(third2019VV_filtered, {min:-15,max:0}, '2019 VV Filtered',0);
-Map.addLayer(third2019VH_filtered, {min:-27,max:0}, '2019 VH Filtered',0);
-Map.addLayer(first2016VH_filtered.addBands(second2018VH_filtered).addBands(third2019VH_filtered), {min: -25, max: -8}, '2016/2018/2019 HV filtered RGB', 0);
+Map.addLayer(first2017VV_filtered, {min:-15,max:0}, '2016 VV Filtered',0);
+Map.addLayer(first2017VH_filtered, {min:-27,max:0}, '2016 VH Filtered',0);
+Map.addLayer(second2019VV_filtered, {min:-15,max:0}, '2018 VV Filtered',0);
+Map.addLayer(second2019VH_filtered, {min:-27,max:0}, '2018 VH Filtered',0);
+Map.addLayer(third2020VV_filtered, {min:-15,max:0}, '2019 VV Filtered',0);
+Map.addLayer(third2020VH_filtered, {min:-27,max:0}, '2019 VH Filtered',0);
+Map.addLayer(first2017VH_filtered.addBands(second2019VH_filtered).addBands(third2020VH_filtered), {min: -25, max: -8}, '2016/2018/2019 HV filtered RGB', 0);
+Map.addLayer(first2017VV_filtered.addBands(second2019VV_filtered).addBands(third2020VV_filtered), {min: -25, max: -8}, '2016/2018/2019 VV filtered RGB', 0);
 
-// Calculate the difference between before and after // Since the values are in Log, we subtract for the difference (divided).
-
-var diff1618VH= first2016VH_filtered.subtract(second2018VH_filtered);
-var diff1618VV= first2016VV_filtered.subtract(second2018VV_filtered);
-var diff1819VH= second2018VH_filtered.subtract(third2019VH_filtered);
-var diff1819VV= second2018VV_filtered.subtract(third2019VV_filtered);
+//Calculate the difference between before and after // Since the values are in Log, we subtract for the difference (divided).
+var diff1719VH= first2017VH_filtered.subtract(second2019VH_filtered);
+var diff1920VH= second2019VH_filtered.subtract(third2020VH_filtered);
+var diff1719VV= first2017VV_filtered.subtract(second2019VV_filtered);
+var diff1920VV= second2019VV_filtered.subtract(third2020VV_filtered);
 
 // Display the difference images
 
-Map.addLayer(diff1618VH, {min: -9,max:9}, 'Difference VH 2016/2018', 0);
-Map.addLayer(diff1618VV, {min: -9,max:9}, 'Difference VV 2016/2018', 0);
-Map.addLayer(diff1819VH, {min: -9,max:9}, 'Difference VH 2018/2019', 0);
-Map.addLayer(diff1819VV, {min: -9,max:9}, 'Difference VV 2018/2019', 0);
+Map.addLayer(diff1719VH, {min: -9,max:9}, 'Difference VH 2016/2018', 0);
+Map.addLayer(diff1920VH, {min: -9,max:9}, 'Difference VH 2018/2019', 0);
+Map.addLayer(diff1719VV, {min: -9,max:9}, 'Difference VV 2016/2018', 0);
+Map.addLayer(diff1920VV, {min: -9,max:9}, 'Difference VV 2018/2019', 0);
+
+//We chose the VH polarization because of it allows much better interpretation.
 
 //Note:Bright areas are loss in vegetation, Dark areas are regrowth of vegetation
 
 //Calculate histograms for each image
 
-print(ui.Chart.image.histogram({image:diff1618VH, region:newroi, scale:300}));
-print(ui.Chart.image.histogram({image:diff1819VH, region:newroi, scale:300}));
+print(ui.Chart.image.histogram({image:diff1719VH, region:newroi, scale:300}));
+print(ui.Chart.image.histogram({image:diff1920VH, region:newroi, scale:300}));
 
-//Note:Bright areas are on the left of the histogram depciting loss in vegetation, 
-// Dark areas are regrowth of vegetation (vice-versa)
+//Note:Bright areas are on the left of the histogram depicting loss in vegetation, 
+//Dark areas are regrowth of vegetation (vice-versa)
 
-// Combine the mean and standard deviation reducers.
+//Combine the mean and standard deviation reducers.
 
 var reducers = ee.Reducer.mean().combine({
 reducer2: ee.Reducer.stdDev(),
@@ -95,12 +100,12 @@ sharedInputs: true
 
 //Calculate the mean and standard deviation for each difference image
 
-var stats1618 = diff1618VH.reduceRegion({
+var stats1719 = diff1719VH.reduceRegion({
 reducer: reducers,
 geometry: newroi,
 scale: 10,
 });
-var stats1819 = diff1819VH.reduceRegion({
+var stats1920 = diff1920VH.reduceRegion({
 reducer: reducers,
 geometry: newroi,
 scale: 10,
@@ -108,34 +113,134 @@ scale: 10,
 
 //Print the mean and stdv for each difference image
 
-print('stats:', stats1618, stats1819);
+print('stats:', stats1719, stats1920);
+
+
 
 //Apply Thresholds based on < stdvx1.5 to create a vegetation regrowth mask
 //Multiply the std dev by 1.5 and add the mean for the threshold
+// ~ 1.7028, 2.1881
 
-var DIFF_UPPER_THRESHOLD1618 = 2.13;
-var DIFF_UPPER_THRESHOLD1819 = 2.81;
-var diff1618VH_thresholded = diff1618VH.gt(DIFF_UPPER_THRESHOLD1618);
-var diff1819VH_thresholded = diff1819VH.gt(DIFF_UPPER_THRESHOLD1819);
+var DIFF_UPPER_THRESHOLD1719 = 1.9028;
+var DIFF_UPPER_THRESHOLD1920 = 2.8;
+var diff1719VH_thresholded = diff1719VH.gt(DIFF_UPPER_THRESHOLD1719).clip(newroi);
+var diff1920VH_thresholded = diff1920VH.gt(DIFF_UPPER_THRESHOLD1920).clip(newroi);
 
 //Display Masks
+Map.centerObject(newroi, 13);
+Map.addLayer(diff1719VH_thresholded.updateMask(diff1719VH_thresholded),{palette:"FF0000"},'Vegetation Loss 17/19',1);
+Map.addLayer(diff1920VH_thresholded.updateMask(diff1920VH_thresholded),{palette:"#4c0000"},'Vegetation Loss 19/20',1);
 
-Map.addLayer(diff1618VH_thresholded.updateMask(diff1618VH_thresholded),{palette:"FF0000"},'Vegetation Loss 16/18',1);
-Map.addLayer(diff1819VH_thresholded.updateMask(diff1819VH_thresholded),{palette:"FF0000"},'Vegetation Loss 18/19',1);
+//Area of losses; Create a raster layer containing the area information of each pixel
+var loss1719VHpixel_area = diff1719VH_thresholded.select("VH").multiply(ee.Image.pixelArea());
+var loss1920VHpixel_area = diff1920VH_thresholded.select("VH").multiply(ee.Image.pixelArea());
 
-//Compare differences in vegetation loss between 16/18 and 18/19
+var area_stats_1719 = loss1719VHpixel_area.reduceRegion({
+                      reducer: ee.Reducer.sum(),
+                      geometry: newroi,
+                      scale: 10,
+                      bestEffort: false
+                      });
+                      
+ var area_stats_1920 = loss1920VHpixel_area.reduceRegion({
+                      reducer: ee.Reducer.sum(),
+                      geometry: newroi,
+                      scale: 10,
+                      bestEffort: false
+                      });                     
+                      
+//Convert pixel area to hectares
+var loss1719_ha = area_stats_1719.getNumber("VH").divide(10000).round();
+var loss1920_ha = area_stats_1920.getNumber("VH").divide(10000).round();
 
-var area_loss1618 = diff1618VH_thresholded.reduceRegion({
-reducer: ee.Reducer.sum(),
-geometry: stats_area,
-scale: 10,
+print(loss1719_ha, "Loss of vegetation area in '17 and '19");
+print(loss1920_ha, "Loss of vegetation area in '19 and '20");
+
+//---------------------------------- MAP PRODUCTION --------------------------------//
+
+//-------------------------- Display the results on the map -----------------------//
+
+// set position of panel where the results will be displayed 
+var results = ui.Panel({
+  style: {
+    position: 'bottom-left',
+    padding: '8px 15px',
+    width: '350px'
+  }
 });
-var area_loss1819 = diff1819VH_thresholded.reduceRegion({
-reducer: ee.Reducer.sum(),
-geometry: stats_area,
-scale: 10,
-});
 
-//Print the mean and stdv for each difference image
+//Prepare the visualtization parameters of the labels 
+var textVis = {
+  'margin':'0px 8px 2px 0px',
+  'fontWeight':'bold'
+  };
+var numberVIS = {
+  'margin':'0px 0px 15px 0px', 
+  'color':'bf0f19',
+  'fontWeight':'bold'
+  };
+var subTextVis = {
+  'margin':'0px 0px 2px 0px',
+  'fontSize':'12px',
+  'color':'grey'
+  };
 
-print('stats:', area_loss1618, area_loss1819);
+var titleTextVis = {
+  'margin':'0px 0px 15px 0px',
+  'fontSize': '18px', 
+  'font-weight':'', 
+  'color': '3333ff'
+  };
+
+// Create lables of the results 
+// Title and time period
+var title = ui.Label('Results', titleTextVis);
+var text1 = ui.Label('Vegetation loss between:',textVis);
+var number1 = ui.Label("2017 / 2019".concat(" and ","2019 / 2020"),numberVIS);
+
+// Alternatively, print dates of the selected tiles
+//var number1 = ui.Label('Please wait...',numberVIS); 
+//(after_collection).evaluate(function(val){number1.setValue(val)}),numberVIS;
+
+// Estimated vegetation loss of 1719'  
+var text2 = ui.Label('Estimated vegetation loss of 2017 and 2019:',textVis);
+var text2_2 = ui.Label('Please wait...',subTextVis);
+var number2 = ui.Label('Please wait...',numberVIS); 
+loss1719_ha.evaluate(function(val){number2.setValue(val+' hectares')}),numberVIS;
+
+// Estimated vegetation loss of 1920'  
+var text3 = ui.Label('Estimated vegetation loss of 2019 and 2020: ',textVis);
+var text3_2 = ui.Label('Please wait...',subTextVis);
+var number3 = ui.Label('Please wait...',numberVIS);
+loss1920_ha.evaluate(function(val){number3.setValue(val+' hectares')}),numberVIS;
+
+
+// Disclaimer
+var text6 = ui.Label('Disclaimer: This product has been derived automatically without validation data. All geographic information has limitations due to the scale, resolution, date and interpretation of the original source materials. No liability concerning the content or the use thereof is assumed by the producer.',subTextVis)
+
+// Produced by...
+var text7 = ui.Label('Script written by: Kushanav Bhuyan', subTextVis)
+
+//Organisation
+var text8 = ui.Label('Organisation: Faculty of ITC, the University of Twente, Netherlands', subTextVis);
+
+// Add the labels to the panel 
+results.add(ui.Panel([
+        title,
+        text1,
+        number1,
+        text2,
+        text2_2,
+        number2,
+        text3,
+        text3_2,
+        number3,
+        text6,
+        text7,
+        text8]
+      ));
+
+// Add the panel to the map 
+Map.add(results);
+
+
